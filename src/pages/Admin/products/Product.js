@@ -81,7 +81,7 @@ const Product = () => {
                                 <table
                                     data-toolbar="#toolbar"
                                     data-toggle="table"
-                                    className="table"
+                                    className="table table-hover table-sm table-bordered"
                                 >
                                     <thead>
                                         <tr>

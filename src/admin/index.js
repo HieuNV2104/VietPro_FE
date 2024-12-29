@@ -1,21 +1,19 @@
-import Admin from '../pages/Admin/Admin';
-import Login from '../pages/Admin/Login';
-import Product from '../pages/Admin/products/Product';
-import User from '../pages/Admin/users/User';
-import Category from '../pages/Admin/categories/Category';
 import { Routes, Route } from 'react-router-dom';
+import routers from '../routers/admin';
 
 const AdminApp = () => {
     return (
-        <>
-            <Routes>
-                <Route path="/" element={<Admin />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/products" element={<Product />} />
-                <Route path="/users" element={<User />} />
-                <Route path="/categories" element={<Category />} />
-            </Routes>
-        </>
+        <Routes>
+            {routers.map((router, index) => {
+                return (
+                    <Route
+                        key={index}
+                        path={router.path}
+                        element={<router.element />}
+                    />
+                );
+            })}
+        </Routes>
     );
 };
 

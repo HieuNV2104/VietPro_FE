@@ -19,7 +19,7 @@ const Header = () => {
                         <span className="icon-bar" />
                         <span className="icon-bar" />
                     </button>
-                    <Link className="navbar-brand" to={'/admin'}>
+                    <Link className="navbar-brand" to={'/admin/dashboard'}>
                         <span>Vietpro</span>Shop
                     </Link>
                     <ul className="user-menu">

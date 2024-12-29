@@ -74,6 +74,7 @@ const Category = () => {
                                 <table
                                     data-toolbar="#toolbar"
                                     data-toggle="table"
+                                    className="table table-hover table-sm table-bordered"
                                 >
                                     <thead>
                                         <tr>

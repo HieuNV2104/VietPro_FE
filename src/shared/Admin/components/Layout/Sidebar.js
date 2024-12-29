@@ -14,7 +14,7 @@ const sidebar = ({ activeSidebar }) => {
             </form>
             <ul className="nav menu">
                 <li className={activeSidebar === 'dashboard' && 'active'}>
-                    <Link to={'/admin'}>
+                    <Link to={'/admin/dashboard'}>
                         <svg className="glyph stroked dashboard-dial">
                             <use xlinkHref="#stroked-dashboard-dial" />
                         </svg>
