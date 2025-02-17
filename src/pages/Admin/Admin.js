@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 const Admin = () => {
     //state
     const [totalProducts, setTotalProducts] = useState(0);
-    // const [totalCategories, setTotalCategories] = useState(0);
+    const [totalCategories, setTotalCategories] = useState(0);
 
     // call API
     useEffect(() => {
@@ -20,11 +20,11 @@ const Admin = () => {
                 setTotalProducts(productsTotal);
 
                 // API Categories
-                // const { total: categoriesTotal } = (await getCategories()).data
-                //     .data.pages;
-                // setTotalCategories(categoriesTotal);
-                // console.log(totalProducts);
-                // console.log(totalCategories);
+                const { total: categoriesTotal } = (await getCategories()).data
+                    .data.pages;
+                setTotalCategories(categoriesTotal);
+                console.log(totalProducts);
+                console.log(totalCategories);
             } catch (error) {
                 console.log(error);
             }
@@ -111,6 +111,39 @@ const Admin = () => {
                                 <div className="col-sm-9 col-lg-7 widget-right">
                                     <div className="large">25.2k</div>
                                     <div className="text-muted">Quảng Cáo</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 col-lg-3">
+                        <div class="panel panel-widget">
+                            <div class="row no-padding">
+                                <div class="col-sm-3 col-lg-5 panel-category widget-left">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="50"
+                                        height="50"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-menu-2"
+                                    >
+                                        <path
+                                            stroke="none"
+                                            d="M0 0h24v24H0z"
+                                            fill="none"
+                                        />
+                                        <path d="M4 6l16 0" />
+                                        <path d="M4 12l16 0" />
+                                        <path d="M4 18l16 0" />
+                                    </svg>
+                                </div>
+                                <div class="col-sm-9 col-lg-7 widget-right">
+                                    <div class="large">{totalCategories}</div>
+                                    <div class="text-muted">Danh mụcmục</div>
                                 </div>
                             </div>
                         </div>
