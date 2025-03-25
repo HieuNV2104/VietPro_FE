@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getSlider } from '../../../../services/Api';
+import { getSlides } from '../../../../services/Api';
 import { getImageSlider } from '../../../ultils';
 import { Link } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ const Slider = () => {
     const [sliders, setSliders] = useState([]);
 
     useEffect(() => {
-        getSlider({
+        getSlides({
             params: {
                 limit: 10,
                 sort: 1
@@ -42,6 +42,8 @@ const Slider = () => {
                             }`}
                         >
                             <img
+                                className="img-fluid"
+                                style={{ maxHeight: 310 }}
                                 src={getImageSlider(slider.image)}
                                 alt="Vietpro Academy"
                             />

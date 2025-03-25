@@ -1,8 +1,8 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { loginCustomer } from '../../services/Api';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../../redux-setup/reducers/authReducer';
+import { loginSuccess } from '../../redux-setup/reducers/customerReducer';
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -11,12 +11,18 @@ const Login = () => {
     const [data, setData] = useState({});
     // error
     const [error, setError] = useState(false);
-
+    const [openPassword, setOpenPassword] = useState({
+        password: false
+    });
+    //
+    const changeOpenPassword = (name) => {
+        setOpenPassword({ ...openPassword, [name]: !openPassword[name] });
+    };
     const changeData = (e) => {
         const { name, value } = e.target;
         return setData({ ...data, [name]: value });
     };
-
+    //
     const login = () => {
         loginCustomer(data)
             .then(({ data }) => {
@@ -40,7 +46,16 @@ const Login = () => {
                 return console.log(error);
             });
     };
-
+    //
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError(false);
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
+    //
     return (
         <div id="customer">
             {error && (
@@ -65,17 +80,26 @@ const Login = () => {
                     </div>
                     <div
                         id="customer-pass"
-                        className="col-lg-6 col-md-6 col-sm-12"
+                        className="col-lg-6 col-md-6 col-sm-12 div-pass"
                     >
                         <input
                             onChange={changeData}
                             placeholder="Mật khẩu (bắt buộc)"
-                            type="text"
+                            type={openPassword.password ? 'text' : 'password'}
                             name="password"
                             className="form-control"
                             required
                             value={data.password || ''}
                         />
+                        <Link onClick={() => changeOpenPassword('password')}>
+                            <i
+                                className={`fa-solid ${
+                                    openPassword.password
+                                        ? 'fa-eye'
+                                        : ' fa-eye-slash'
+                                } icon-pass`}
+                            ></i>
+                        </Link>
                     </div>
                 </div>
             </form>
@@ -88,6 +112,22 @@ const Login = () => {
                 <div className="by-now col-lg-6 col-md-6 col-sm-12">
                     <Link to={'/'}>
                         <b>Quay về trang chủ</b>
+                    </Link>
+                </div>
+            </div>
+            <div className="row">
+                <div className="by-now col-lg-6 col-md-6 col-sm-12">
+                    <Link>
+                        <i class="fa-brands fa-google"></i>
+                        <span style={{ marginLeft: 5 }}>Login with Google</span>
+                    </Link>
+                </div>
+                <div className="by-now col-lg-6 col-md-6 col-sm-12">
+                    <Link>
+                        <i class="fa-brands fa-facebook"></i>
+                        <span style={{ marginLeft: 5 }}>
+                            Login with Facebook
+                        </span>
                     </Link>
                 </div>
             </div>

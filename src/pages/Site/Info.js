@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateCustomer } from '../../services/Api';
-import { useState } from 'react';
-import { udpateSuccess } from '../../redux-setup/reducers/authReducer';
+import { useState, useEffect } from 'react';
+import { updateSuccess } from '../../redux-setup/reducers/customerReducer';
 
 const Info = () => {
     const dispatch = useDispatch();
@@ -10,7 +10,7 @@ const Info = () => {
     const [error, setError] = useState('');
     // customer
     const customer = useSelector(
-        ({ authReducer }) => authReducer?.login?.currentCustomer
+        ({ customerReducer }) => customerReducer?.login?.currentCustomer
     );
     // data update
     const [data, setData] = useState({
@@ -28,7 +28,7 @@ const Info = () => {
         updateCustomer(customer._id, data)
             .then(() => {
                 dispatch(
-                    udpateSuccess({
+                    updateSuccess({
                         data
                     })
                 );
@@ -41,11 +41,19 @@ const Info = () => {
                 return console.log(error);
             });
     };
-    if (isSuccess) {
-        setTimeout(() => {
-            return setIsSuccess(false);
-        }, 2000);
-    }
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError(false);
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+        if (isSuccess) {
+            setTimeout(() => {
+                return setIsSuccess(false);
+            }, 2000);
+        }
+    }, [error, isSuccess]);
     return (
         <div id="customer">
             {error && (

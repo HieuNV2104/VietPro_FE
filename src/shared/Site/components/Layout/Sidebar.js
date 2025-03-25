@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getBanner } from '../../../../services/Api';
+import { getBanners } from '../../../../services/Api';
 import { getImageBanner } from '../../../ultils';
 import { Link } from 'react-router-dom';
 
@@ -7,11 +7,10 @@ const Sidebar = () => {
     const [banners, setBanners] = useState([]);
 
     useEffect(() => {
-        getBanner({
+        getBanners({
             params: {
                 limit: 6,
                 sort: 1
-                // publish: true
             }
         })
             .then(({ data }) => setBanners(data.data.docs))

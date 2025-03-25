@@ -3,14 +3,16 @@ import { orderList, cancelOrder } from '../../services/Api';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { formatDate, formatPrice } from '../../shared/ultils';
+import Pagination from '../../shared/Site/components/Pagination';
 
 const Order = () => {
     // id order
     const [idOrder, setIdOrder] = useState('');
     // orderList
     const [orders, setOders] = useState([]);
+    const [pages, setPages] = useState([]);
     // login
-    const login = useSelector(({ authReducer }) => authReducer.login);
+    const login = useSelector(({ customerReducer }) => customerReducer.login);
 
     // cancel order
     const handleCancelOrder = (id) => {
@@ -26,7 +28,10 @@ const Order = () => {
 
     useEffect(() => {
         orderList(login?.currentCustomer?._id)
-            .then(({ data }) => setOders(data.data.docs))
+            .then(({ data }) => {
+                setOders(data.data.docs);
+                setPages(data.data.pages);
+            })
             .catch((error) => console.log(error));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [idOrder]);
@@ -44,10 +49,16 @@ const Order = () => {
             <form method="post">
                 {orders?.map((order, index) => {
                     let alert = '';
-                    if (order.status === 0) {
+                    if (order.status === 'waiting') {
+                        alert = 'alert-warning';
+                    }
+                    if (order.status === 'cancelled') {
                         alert = 'alert-danger';
                     }
-                    if (order.status === 2) {
+                    if (
+                        order.status === 'delivered' ||
+                        order.status === 'done'
+                    ) {
                         alert = 'alert-success';
                     }
                     return (
@@ -59,7 +70,21 @@ const Order = () => {
                                         {formatDate(order.createdAt)}
                                     </span>
                                 </h4>
-                                <p>Mã Đơn (MĐ): {order._id}</p>
+                                <p style={{ marginBottom: 6.5 }}>
+                                    Mã Đơn (MĐ): {order._id}
+                                </p>
+                                <p style={{ margin: 0 }}>
+                                    Thanh toán:{' '}
+                                    {order.is_paid ? (
+                                        <span style={{ color: 'green' }}>
+                                            Đã thanh toán
+                                        </span>
+                                    ) : (
+                                        <span style={{ color: 'red' }}>
+                                            Chưa thanh toán
+                                        </span>
+                                    )}
+                                </p>
                             </div>
                             <div className="cart-price col-lg-2 col-md-2 col-sm-12">
                                 <b>{formatPrice(order.totalPrice)}</b>
@@ -71,7 +96,7 @@ const Order = () => {
                                 >
                                     Chi tiết đơn hàng
                                 </Link>
-                                {order.status === 0 && (
+                                {order.status === 'cancelled' && (
                                     <button
                                         type="button"
                                         className="btn btn-danger mb-1"
@@ -79,31 +104,33 @@ const Order = () => {
                                         Đơn đã huỷ
                                     </button>
                                 )}
-                                {order.status === 1 && (
-                                    <>
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline-danger mb-1"
-                                            onClick={() =>
-                                                handleCancelOrder(order._id)
-                                            }
-                                        >
-                                            Huỷ đơn
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline-success mb-1"
-                                        >
-                                            Đơn đang giao
-                                        </button>
-                                    </>
-                                )}
-                                {order.status === 2 && (
+                                {(order.status === 'delivered' ||
+                                    order.status === 'done') && (
                                     <button
                                         type="button"
                                         className="btn btn-success mb-1"
                                     >
                                         Đơn đã giao
+                                    </button>
+                                )}
+                                {order.status === 'waiting' && (
+                                    <button
+                                        type="button"
+                                        className="btn btn-warning mb-1"
+                                    >
+                                        Đơn chờ duyệt
+                                    </button>
+                                )}
+                                {(order.status === 'shipping' ||
+                                    order.status === 'waiting') && (
+                                    <button
+                                        type="button"
+                                        className="btn btn-outline-danger mb-1"
+                                        onClick={() =>
+                                            handleCancelOrder(order._id)
+                                        }
+                                    >
+                                        Huỷ đơn
                                     </button>
                                 )}
                             </div>
@@ -124,6 +151,7 @@ const Order = () => {
                     </div>
                 </div>
             </form>
+            <Pagination pages={pages} />
         </div>
     );
 };

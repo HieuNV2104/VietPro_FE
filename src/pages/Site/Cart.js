@@ -11,17 +11,22 @@ import { formatPrice } from '../../shared/ultils';
 const Cart = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    //
     // login
-    const login = useSelector(({ authReducer }) => authReducer.login);
+    const login = useSelector(({ customerReducer }) => customerReducer.login);
     // items cart
     const items = useSelector(({ cartReducer }) => cartReducer.cartItems);
-    const newItems = items?.map((item, index) => {
+    const newItems = items?.map((item) => {
         return {
             prd_id: item._id,
             price: item.price,
             qty: item.qty
         };
     });
+    // total price
+    const totalPrice = items?.reduce((total, item) => {
+        return (total += item.qty * item.price);
+    }, 0);
     // update qty
     const handleChangeQuantity = (e, _id) => {
         dispatch(
@@ -54,21 +59,17 @@ const Cart = () => {
         e.preventDefault();
         const { _id, fullName, email, phone, address } = login.currentCustomer;
         order({
-            fullName,
-            email,
-            phone,
-            address,
+            // fullName,
+            // email,
+            // phone,
+            // address,
             customer_id: _id,
+            totalPrice,
             items: newItems
         })
             .then(() => navigate('/success'))
             .catch((error) => console.log(error));
     };
-
-    // total price
-    const totalPrice = items?.reduce((total, item) => {
-        return (total += item.qty * item.price);
-    }, 0);
 
     return (
         <>
@@ -108,6 +109,11 @@ const Cart = () => {
                                             id="quantity"
                                             className="form-control form-blue quantity"
                                             value={item.qty}
+                                            max={
+                                                item.qtyOnStock > 10
+                                                    ? 10
+                                                    : item.qtyOnStock
+                                            }
                                         />
                                     </div>
                                     <div className="cart-price col-lg-3 col-md-3 col-sm-12">

@@ -1,6 +1,23 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../../../../services/Api';
+import { logoutUserSuccess } from '../../../../redux-setup/reducers/userReducer';
 
 const Header = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const login = useSelector(({ userReducer }) => userReducer.login);
+    //
+    const logout = async () => {
+        try {
+            await logoutUser();
+            dispatch(logoutUserSuccess());
+            return navigate('/admin/login');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    //
     return (
         <nav
             className="navbar navbar-inverse navbar-fixed-top"
@@ -25,32 +42,18 @@ const Header = () => {
                     <ul className="user-menu">
                         <li className="dropdown pull-right">
                             <Link
+                                style={{ borderRight: '1px solid' }}
                                 className="dropdown-toggle"
                                 data-toggle="dropdown"
                             >
                                 <svg className="glyph stroked male-user">
                                     <use xlinkHref="#stroked-male-user" />
                                 </svg>
-                                Admin <span className="caret" />
+                                {login && login?.currentUser?.full_name}{' '}
                             </Link>
-                            <ul className="dropdown-menu" role="menu">
-                                <li>
-                                    <Link>
-                                        <svg className="glyph stroked male-user">
-                                            <use xlinkHref="#stroked-male-user" />
-                                        </svg>
-                                        Hồ sơ
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link>
-                                        <svg className="glyph stroked cancel">
-                                            <use xlinkHref="#stroked-cancel" />
-                                        </svg>
-                                        Đăng xuất
-                                    </Link>
-                                </li>
-                            </ul>
+                            <Link onClick={logout} style={{ paddingLeft: 5 }}>
+                                Đăng xuất
+                            </Link>
                         </li>
                     </ul>
                 </div>

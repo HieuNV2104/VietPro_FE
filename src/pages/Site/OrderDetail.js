@@ -11,7 +11,7 @@ const OrderDetail = () => {
 
     useEffect(() => {
         orderDetail(id)
-            .then(({ data }) => setOrder(data.data))
+            .then(({ data }) => setOrder(data.data.docs))
             .catch((error) => console.log(error));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

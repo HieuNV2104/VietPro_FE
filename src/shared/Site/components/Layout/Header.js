@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { logoutSuccess } from '../../../../redux-setup/reducers/authReducer';
+import { logoutSuccess } from '../../../../redux-setup/reducers/customerReducer';
 import { logoutCustomer } from '../../../../services/Api';
 
 const Header = () => {
@@ -10,7 +10,7 @@ const Header = () => {
     // name search
     const [nameSearch, setNameSearch] = useState('');
     // login
-    const login = useSelector(({ authReducer }) => authReducer.login);
+    const login = useSelector(({ customerReducer }) => customerReducer.login);
     // total items
     const cartItems = useSelector(({ cartReducer }) => cartReducer.cartItems);
     const totalItems = cartItems.reduce((total, item) => {
@@ -27,10 +27,12 @@ const Header = () => {
     };
 
     // logout
-    const logout = (e) => {
-        dispatch(logoutSuccess());
-        logoutCustomer(login?.currentCustomer?._id)
-            .then(() => navigate('/'))
+    const logout = () => {
+        logoutCustomer({})
+            .then(() => {
+                dispatch(logoutSuccess());
+                return navigate('/');
+            })
             .catch((error) => console.log(error));
     };
 

@@ -14,3 +14,28 @@
     border-color: #dee2e6;
     color: #fff;
 }
+.above-products {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.filter {
+    display: flex;
+    align-items: center;
+}
+.filter-text {
+    font-size: 18px;
+    margin-right: 5px;
+}
+.filter-list {
+    padding: 5px;
+}
+@media screen and (max-width: 768px) {
+    .above-products {
+        display: block;
+    }
+    .filter {
+        margin-top: 5px;
+    }
+}

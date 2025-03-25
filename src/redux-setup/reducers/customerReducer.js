@@ -8,8 +8,8 @@ const initialState = {
     }
 };
 
-const authReducer = createSlice({
-    name: 'authReducer',
+const customerReducer = createSlice({
+    name: 'customerReducer',
     initialState,
     reducers: {
         loginSuccess: (state, action) => {
@@ -20,14 +20,12 @@ const authReducer = createSlice({
             state.login.currentCustomer = null;
             state.login.loggedIn = false;
         },
-        udpateSuccess: (state, action) => {
+        updateSuccess: (state, action) => {
             state.login.currentCustomer = {
                 ...state.login.currentCustomer,
-                fullName:
-                    action.payload.data.fullName || state.customerInfo.fullName,
-                phone: action.payload.data.phone || state.customerInfo.phone,
-                address:
-                    action.payload.data.address || state.customerInfo.address
+                fullName: action.payload.data.fullName,
+                phone: action.payload.data.phone,
+                address: action.payload.data.address
             };
         },
         updateAccessToken: (state, action) => {
@@ -37,6 +35,6 @@ const authReducer = createSlice({
     }
 });
 
-export const { loginSuccess, logoutSuccess, udpateSuccess, updateAccessToken } =
-    authReducer.actions;
-export default authReducer.reducer;
+export const { loginSuccess, logoutSuccess, updateSuccess, updateAccessToken } =
+    customerReducer.actions;
+export default customerReducer.reducer;

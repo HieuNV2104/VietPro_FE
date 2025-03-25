@@ -9,7 +9,8 @@ const Home = () => {
     useEffect(() => {
         getProducts({
             params: {
-                limit: 6
+                limit: 6,
+                is_stock: true
             }
         })
             .then(({ data }) => setLatestProducts(data.data.docs))
@@ -17,7 +18,8 @@ const Home = () => {
         getProducts({
             params: {
                 limit: 6,
-                is_featured: true
+                is_featured: true,
+                is_stock: true
             }
         })
             .then(({ data }) => setFeaturedProducts(data.data.docs))

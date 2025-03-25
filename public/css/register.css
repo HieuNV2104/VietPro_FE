@@ -115,3 +115,12 @@
         text-align: left;
     }
 }
+
+.div-pass {
+    position: relative;
+}
+.icon-pass {
+    position: absolute;
+    top: 19px;
+    right: 15px;
+}

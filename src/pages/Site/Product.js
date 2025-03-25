@@ -1,7 +1,8 @@
 import {
     getProduct,
     getCommentsByProduct,
-    createComment
+    createComment,
+    getSale
 } from '../../services/Api';
 import { getImageProduct } from '../../shared/ultils';
 import { useState, useEffect } from 'react';
@@ -19,6 +20,7 @@ import { formatPrice, formatDate } from '../../shared/ultils';
 const Product = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [price, setPrice] = useState(0);
     const [product, setProduct] = useState(null);
     const [comments, setComments] = useState([]);
     const [data, setData] = useState({});
@@ -30,7 +32,7 @@ const Product = () => {
     // get id product
     const { id } = useParams();
     // data user
-    const user = useSelector(({ authReducer }) => authReducer.login);
+    const user = useSelector(({ customerReducer }) => customerReducer.login);
     // value comment
     const getValueComment = (e) => {
         const { name, value } = e.target;
@@ -76,18 +78,36 @@ const Product = () => {
             addToCart({
                 _id: product?._id,
                 name: product?.name,
-                price: product?.price,
+                price: price,
                 image: product?.image,
-                qty: 1
+                qty: 1,
+                qtyOnStock: +product?.qty
             })
         );
         e.target.name === 'buynow' && navigate('/cart');
     };
-
+    //
+    const changePrice = async (data, price) => {
+        if (data) {
+            const { docs: sale } = (await getSale(data)).data.data;
+            if (sale.status === 'valid') {
+                if (sale.type === 'percent') {
+                    setPrice(price - (price * sale.value) / 100);
+                }
+                if (sale.type === 'direct') {
+                    setPrice(price - sale.value > 0 ? price - sale.value : 0);
+                }
+            }
+        }
+    };
     // call API
     useEffect(() => {
         getProduct(id, {})
-            .then(({ data }) => setProduct(data.data))
+            .then(({ data }) => {
+                setProduct(data.data.docs);
+                setPrice(data.data.docs.price);
+                changePrice(data.data.docs.sale, data.data.docs.price);
+            })
             .catch((error) => console.log(error));
 
         getCommnets(id);
@@ -111,7 +131,7 @@ const Product = () => {
                         <h1>{product?.name}</h1>
                         <ul>
                             <li>
-                                <span>Bảo hành:</span> 12 Tháng
+                                <span>Bảo hành:</span> {product?.warranty}
                             </li>
                             <li>
                                 <span>Đi kèm:</span> {product?.accessories}
@@ -122,10 +142,11 @@ const Product = () => {
                             <li>
                                 <span>Khuyến Mại:</span> {product?.promotion}
                             </li>
-                            <li id="price">Giá Bán (chưa bao gồm VAT)</li>
-                            <li id="price-number">
-                                {formatPrice(product?.price)}
+                            <li>
+                                <span>Số lượng:</span> {product?.qty}
                             </li>
+                            <li id="price">Giá Bán</li>
+                            <li id="price-number">{formatPrice(price)}</li>
                             {product ? (
                                 product.is_stock ? (
                                     <li id="status">Còn hàng</li>

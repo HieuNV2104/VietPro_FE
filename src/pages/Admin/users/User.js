@@ -1,9 +1,78 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import Head from '../../../shared/Admin/components/Layout/Head';
 import Header from '../../../shared/Admin/components/Layout/Header';
 import Sidebar from '../../../shared/Admin/components/Layout/Sidebar';
+import Search from '../../../shared/Admin/components/Search';
+import { getUsers, deleteUser } from '../../../services/Api';
+import Pagination from '../../../shared/Admin/components/Pagination';
+import { useState, useEffect } from 'react';
 
 const User = () => {
+    const [idSearch, setIdSearch] = useState('');
+    const [users, setUsers] = useState([]);
+    const [pages, setPages] = useState({});
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = +searchParams.get('page') || 1;
+    // call API
+    const callAPI = async (id) => {
+        try {
+            let params = {
+                limit: 5,
+                page
+            };
+            if (id) {
+                params.id = id;
+                params.page = 1;
+            }
+            // API products
+            const { docs, pages } = (
+                await getUsers({
+                    params
+                })
+            ).data.data;
+            setUsers(docs);
+            setPages(pages);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    //
+    const searchId = (e) => {
+        setIdSearch(e.target.value);
+    };
+    const handleSearch = () => {
+        callAPI(idSearch);
+    };
+    //
+    const handleDeleteUser = async (id) => {
+        const confirm = window.confirm(
+            'Bạn có muốn xóa thành viên này không ?'
+        );
+        if (!confirm) return;
+        try {
+            const res = await deleteUser(id);
+            if (res.status === 200) {
+                if (page > 1) {
+                    setSearchParams({ page: 1 });
+                } else {
+                    callAPI();
+                }
+                setTimeout(() => {
+                    alert('Bạn đã xóa thành viên thành công!');
+                }, 100);
+            } else {
+                alert('Xóa thành viên không thành công!');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    //
+    useEffect(() => {
+        setIdSearch('');
+        callAPI('');
+    }, [page]);
+    //
     return (
         <>
             <Head title={'Quản lý thành viên'} />
@@ -13,11 +82,11 @@ const User = () => {
                 <div className="row">
                     <ol className="breadcrumb">
                         <li>
-                            <a href="#">
+                            <Link to={'/admin/dashboard'}>
                                 <svg className="glyph stroked home">
                                     <use xlinkHref="#stroked-home" />
                                 </svg>
-                            </a>
+                            </Link>
                         </li>
                         <li className="active">Danh sách thành viên</li>
                     </ol>
@@ -28,10 +97,18 @@ const User = () => {
                     </div>
                 </div>
                 <div id="toolbar" className="btn-group">
-                    <a href="thanhvien-add.html" className="btn btn-success">
+                    <Link
+                        to={'/admin/users/create'}
+                        className="btn btn-success"
+                    >
                         <i className="glyphicon glyphicon-plus" /> Thêm thành
                         viên
-                    </a>
+                    </Link>
+                    <Search
+                        idSearch={idSearch}
+                        searchId={searchId}
+                        handleSearch={handleSearch}
+                    />
                 </div>
                 <div className="row">
                     <div className="col-lg-12">
@@ -40,6 +117,7 @@ const User = () => {
                                 <table
                                     data-toolbar="#toolbar"
                                     data-toggle="table"
+                                    className="table table-hover table-sm table-bordered"
                                 >
                                     <thead>
                                         <tr>
@@ -66,88 +144,52 @@ const User = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Admin</td>
-                                            <td>admin@gmail.com</td>
-                                            <td>
-                                                <span className="label label-danger">
-                                                    Admin
-                                                </span>
-                                            </td>
-                                            <td className="form-group">
-                                                <a
-                                                    href="thanhvien-edit.html"
-                                                    className="btn btn-primary"
-                                                >
-                                                    <i className="glyphicon glyphicon-pencil" />
-                                                </a>
-                                                <a
-                                                    href="/"
-                                                    className="btn btn-danger"
-                                                >
-                                                    <i className="glyphicon glyphicon-remove" />
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Nguyễn Văn A</td>
-                                            <td>nguyenvana@gmail.com</td>
-                                            <td>
-                                                <span className="label label-warning">
-                                                    Member
-                                                </span>
-                                            </td>
-                                            <td className="form-group">
-                                                <a
-                                                    href="thanhvien-edit.html"
-                                                    className="btn btn-primary"
-                                                >
-                                                    <i className="glyphicon glyphicon-pencil" />
-                                                </a>
-                                                <a
-                                                    href="/"
-                                                    className="btn btn-danger"
-                                                >
-                                                    <i className="glyphicon glyphicon-remove" />
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        {users?.map((user) => {
+                                            return (
+                                                <tr>
+                                                    <td>{user?._id}</td>
+                                                    <td>{user?.full_name}</td>
+                                                    <td>{user?.email}</td>
+                                                    <td>
+                                                        {user?.role ===
+                                                        'admin' ? (
+                                                            <span className="label label-danger">
+                                                                Admin
+                                                            </span>
+                                                        ) : (
+                                                            <span className="label label-warning">
+                                                                Menber
+                                                            </span>
+                                                        )}
+                                                    </td>
+                                                    <td className="form-group">
+                                                        <Link
+                                                            to={`/admin/users-${user._id}/edit`}
+                                                            className="btn btn-primary"
+                                                        >
+                                                            <i className="glyphicon glyphicon-pencil" />
+                                                        </Link>
+                                                        {user.role ===
+                                                            'admin' || (
+                                                            <Link
+                                                                onClick={() =>
+                                                                    handleDeleteUser(
+                                                                        user._id
+                                                                    )
+                                                                }
+                                                                className="btn btn-danger"
+                                                            >
+                                                                <i className="glyphicon glyphicon-remove" />
+                                                            </Link>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
-                            <div className="panel-footer">
-                                <nav aria-label="Page navigation example">
-                                    <ul className="pagination">
-                                        <li className="page-item">
-                                            <a className="page-link" href="#">
-                                                «
-                                            </a>
-                                        </li>
-                                        <li className="page-item">
-                                            <a className="page-link" href="#">
-                                                1
-                                            </a>
-                                        </li>
-                                        <li className="page-item">
-                                            <a className="page-link" href="#">
-                                                2
-                                            </a>
-                                        </li>
-                                        <li className="page-item">
-                                            <a className="page-link" href="#">
-                                                3
-                                            </a>
-                                        </li>
-                                        <li className="page-item">
-                                            <a className="page-link" href="#">
-                                                »
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
+                            {idSearch ? '' : <Pagination pages={pages} />}
                         </div>
                     </div>
                 </div>

@@ -1,24 +1,27 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import cartReducer from './reducers/cartReducer';
-import authReducer from './reducers/authReducer';
+import customerReducer from './reducers/customerReducer';
+import userReducer from './reducers/userReducer';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+
 // persist config
-// cart
 const persistConfig = {
-    key: 'vietpro',
+    key: 'vietpro_store',
     storage
 };
-const persistedCartReducer = persistReducer(persistConfig, cartReducer);
-// auth
-const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+const persistedReducer = persistReducer(
+    persistConfig,
+    combineReducers({
+        cartReducer,
+        customerReducer,
+        userReducer
+    })
+);
 
 // store
 export const store = configureStore({
-    reducer: {
-        cartReducer: persistedCartReducer,
-        authReducer: persistedAuthReducer
-    }
+    reducer: persistedReducer
 });
 
 export const persistor = persistStore(store);

@@ -3,7 +3,9 @@ import { Navigate } from 'react-router-dom';
 
 const CheckNotLogged = (OriginComponent) => {
     const ExtendsComponent = () => {
-        const login = useSelector(({ authReducer }) => authReducer.login);
+        const login = useSelector(
+            ({ customerReducer }) => customerReducer.login
+        );
         return login.loggedIn ? <OriginComponent /> : <Navigate to={'/'} />;
     };
     return ExtendsComponent;

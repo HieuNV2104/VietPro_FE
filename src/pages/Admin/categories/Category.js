@@ -2,41 +2,80 @@ import { Link } from 'react-router-dom';
 import Head from '../../../shared/Admin/components/Layout/Head';
 import Header from '../../../shared/Admin/components/Layout/Header';
 import Sidebar from '../../../shared/Admin/components/Layout/Sidebar';
+import Search from '../../../shared/Admin/components/Search';
 import Pagination from '../../../shared/Admin/components/Pagination';
-import { getCategories } from '../../../services/Api';
+import { getAdminCategories, deleteCategory } from '../../../services/Api';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const Category = () => {
     //state
+    const [idSearch, setIdSearch] = useState('');
     const [categories, setCategories] = useState([]);
     const [pages, setPages] = useState({});
-
     // page
     const [searchParams, setSearchParams] = useSearchParams();
     const page = +searchParams.get('page') || 1;
-
+    // call API
+    const callAPI = async (id) => {
+        try {
+            let params = {
+                limit: 5,
+                page
+            };
+            if (id) {
+                params.id = id;
+                params.page = 1;
+            }
+            // API
+            const { docs, pages } = (
+                await getAdminCategories({
+                    params
+                })
+            ).data.data;
+            setCategories(docs);
+            setPages(pages);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    //
+    const searchId = (e) => {
+        setIdSearch(e.target.value);
+    };
+    const handleSearch = () => {
+        callAPI(idSearch);
+    };
+    //
+    const handleDeleteCategory = async (id) => {
+        const confirm = window.confirm('Bạn có muốn xóa danh mục này không ?');
+        if (!confirm) {
+            return;
+        }
+        try {
+            const res = await deleteCategory(id);
+            if (res.status === 200) {
+                if (page > 1) {
+                    setSearchParams({ page: 1 });
+                } else {
+                    callAPI();
+                }
+                setTimeout(() => {
+                    alert('Bạn đã xóa danh mục thành công!');
+                }, 100);
+            } else {
+                alert('Xóa danh mục không thành công!');
+            }
+        } catch (error) {
+            alert('Đã có sản phẩm dùng danh mục này!');
+        }
+    };
     // call APi
     useEffect(() => {
-        (async () => {
-            try {
-                // API Categories
-                const { docs, pages } = (
-                    await getCategories({
-                        params: {
-                            limit: 2,
-                            page
-                        }
-                    })
-                ).data.data;
-                setCategories(docs);
-                setPages(pages);
-            } catch (error) {
-                console.log(error);
-            }
-        })();
+        setIdSearch('');
+        callAPI('');
     }, [page]);
-
+    //
     return (
         <>
             <Head title={'Quản lý danh mục'} />
@@ -46,7 +85,7 @@ const Category = () => {
                 <div className="row">
                     <ol className="breadcrumb">
                         <li>
-                            <Link href="#">
+                            <Link to={'/admin/dashboard'}>
                                 <svg className="glyph stroked home">
                                     <use xlinkHref="#stroked-home" />
                                 </svg>
@@ -63,9 +102,17 @@ const Category = () => {
                 </div>
                 {/*/.row*/}
                 <div id="toolbar" className="btn-group">
-                    <Link href="category-add.html" className="btn btn-success">
+                    <Link
+                        to={'/admin/categories/create'}
+                        className="btn btn-success"
+                    >
                         <i className="glyphicon glyphicon-plus" /> Thêm danh mục
                     </Link>
+                    <Search
+                        idSearch={idSearch}
+                        searchId={searchId}
+                        handleSearch={handleSearch}
+                    />
                 </div>
                 <div className="row">
                     <div className="col-md-12">
@@ -96,13 +143,17 @@ const Category = () => {
                                                     <td>{category?.name}</td>
                                                     <td className="form-group">
                                                         <Link
-                                                            href="/"
+                                                            to={`/admin/categories-${category?._id}/edit`}
                                                             className="btn btn-primary"
                                                         >
                                                             <i className="glyphicon glyphicon-pencil" />
                                                         </Link>
                                                         <Link
-                                                            href="/"
+                                                            onClick={() =>
+                                                                handleDeleteCategory(
+                                                                    category._id
+                                                                )
+                                                            }
                                                             className="btn btn-danger"
                                                         >
                                                             <i className="glyphicon glyphicon-remove" />
@@ -114,7 +165,7 @@ const Category = () => {
                                     </tbody>
                                 </table>
                             </div>
-                            <Pagination pages={pages} />
+                            {idSearch ? '' : <Pagination pages={pages} />}
                         </div>
                     </div>
                 </div>
