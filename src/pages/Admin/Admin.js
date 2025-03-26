@@ -3,8 +3,8 @@ import Head from '../../shared/Admin/components/Layout/Head';
 import Header from '../../shared/Admin/components/Layout/Header';
 import Sidebar from '../../shared/Admin/components/Layout/Sidebar';
 import {
-    getCategories,
-    getProducts,
+    getAdminCategories,
+    getAdminProducts,
     getUsers,
     getComments,
     getSales,
@@ -30,12 +30,12 @@ const Admin = () => {
         (async () => {
             try {
                 // API Products
-                const { total: productsTotal } = (await getProducts()).data.data
-                    .pages;
+                const { total: productsTotal } = (await getAdminProducts()).data
+                    .data.pages;
                 setTotalProducts(productsTotal);
                 // API Categories
-                const { total: categoriesTotal } = (await getCategories()).data
-                    .data.pages;
+                const { total: categoriesTotal } = (await getAdminCategories())
+                    .data.data.pages;
                 setTotalCategories(categoriesTotal);
                 // API Users
                 const { total: usersTotal } = (await getUsers()).data.data

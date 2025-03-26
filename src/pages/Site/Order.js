@@ -52,6 +52,9 @@ const Order = () => {
                     if (order.status === 'waiting') {
                         alert = 'alert-warning';
                     }
+                    if (order.status === 'shipping') {
+                        alert = 'alert-primary';
+                    }
                     if (order.status === 'cancelled') {
                         alert = 'alert-danger';
                     }
@@ -119,6 +122,14 @@ const Order = () => {
                                         className="btn btn-warning mb-1"
                                     >
                                         Đơn chờ duyệt
+                                    </button>
+                                )}
+                                {order.status === 'shipping' && (
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary mb-1"
+                                    >
+                                        Đơn đang giao
                                     </button>
                                 )}
                                 {(order.status === 'shipping' ||
