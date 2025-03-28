@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { getImageProduct, formatPrice } from '../../ultils';
-import { getSale } from '../../../services/Api';
+import { getSaleDetail } from '../../../services/Api';
 import { useState, useEffect } from 'react';
 
 const ProductItem = ({ items }) => {
@@ -23,7 +23,8 @@ const ProductItem = ({ items }) => {
         (async () => {
             try {
                 if (items?.sale) {
-                    const { docs } = (await getSale(items?.sale)).data.data;
+                    const { docs } = (await getSaleDetail(items?.sale)).data
+                        .data;
                     changePrice(docs);
                 }
             } catch (error) {
@@ -45,7 +46,6 @@ const ProductItem = ({ items }) => {
                     <>
                         <span
                             style={{
-                                color: 'black',
                                 textDecoration: 'line-through',
                                 color: '#6B727F'
                             }}

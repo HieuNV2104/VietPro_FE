@@ -57,12 +57,12 @@ const Cart = () => {
     // order
     const handleOrder = (e) => {
         e.preventDefault();
-        const { _id, fullName, email, phone, address } = login.currentCustomer;
+        const { _id, phone, address } = login.currentCustomer;
+        if (!phone || !address) {
+            alert('Hãy cập nhật đầy đủ thông tin cá nhân trước khi mua hàng!');
+            return navigate('/info');
+        }
         order({
-            // fullName,
-            // email,
-            // phone,
-            // address,
             customer_id: _id,
             totalPrice,
             items: newItems

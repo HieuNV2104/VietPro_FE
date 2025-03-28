@@ -3,6 +3,7 @@ import { loginCustomer } from '../../services/Api';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../../redux-setup/reducers/customerReducer';
+import { BASE_API } from '../../shared/constants/app';
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -45,6 +46,41 @@ const Login = () => {
                 }
                 return console.log(error);
             });
+    };
+    const handleloginOAuth = async (type) => {
+        const width = 500;
+        const height = 600;
+
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+
+        const left = (screenWidth - width) / 2;
+        const top = (screenHeight - height) / 2;
+
+        window.open(
+            `${BASE_API}/login/${type}`,
+            '_blank',
+            `width=${width},height=${height},top=${top},left=${left}`
+        );
+
+        window.addEventListener('message', (event) => {
+            if (event.data.success) {
+                dispatch(
+                    loginSuccess({
+                        ...event.data.customer,
+                        phone:
+                            event.data.customer.phone === 'default phone'
+                                ? ''
+                                : event.data.customer.phone,
+                        address:
+                            event.data.customer.address === 'default address'
+                                ? ''
+                                : event.data.customer.address,
+                        accessToken: event.data.accessToken
+                    })
+                );
+            }
+        });
     };
     //
     useEffect(() => {
@@ -105,29 +141,37 @@ const Login = () => {
             </form>
             <div className="row">
                 <div className="by-now col-lg-6 col-md-6 col-sm-12">
-                    <Link onClick={login}>
+                    <Link style={{ minWidth: 208 }} onClick={login}>
                         <b>Đăng nhập ngay</b>
                     </Link>
                 </div>
                 <div className="by-now col-lg-6 col-md-6 col-sm-12">
-                    <Link to={'/'}>
+                    <Link style={{ minWidth: 208 }} to={'/'}>
                         <b>Quay về trang chủ</b>
                     </Link>
                 </div>
             </div>
             <div className="row">
                 <div className="by-now col-lg-6 col-md-6 col-sm-12">
-                    <Link>
+                    <Link
+                        style={{ minWidth: 208 }}
+                        onClick={() => handleloginOAuth('google')}
+                    >
                         <i class="fa-brands fa-google"></i>
-                        <span style={{ marginLeft: 5 }}>Login with Google</span>
+                        <b style={{ marginLeft: 5, display: 'inline-block' }}>
+                            Login with Google
+                        </b>
                     </Link>
                 </div>
                 <div className="by-now col-lg-6 col-md-6 col-sm-12">
-                    <Link>
+                    <Link
+                        style={{ minWidth: 208 }}
+                        onClick={() => handleloginOAuth('facebook')}
+                    >
                         <i class="fa-brands fa-facebook"></i>
-                        <span style={{ marginLeft: 5 }}>
+                        <b style={{ marginLeft: 5, display: 'inline-block' }}>
                             Login with Facebook
-                        </span>
+                        </b>
                     </Link>
                 </div>
             </div>

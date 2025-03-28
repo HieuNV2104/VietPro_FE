@@ -2,7 +2,7 @@ import {
     getProduct,
     getCommentsByProduct,
     createComment,
-    getSale
+    getSaleDetail
 } from '../../services/Api';
 import { getImageProduct } from '../../shared/ultils';
 import { useState, useEffect } from 'react';
@@ -89,7 +89,7 @@ const Product = () => {
     //
     const changePrice = async (data, price) => {
         if (data) {
-            const { docs: sale } = (await getSale(data)).data.data;
+            const { docs: sale } = (await getSaleDetail(data)).data.data;
             if (sale.status === 'valid') {
                 if (sale.type === 'percent') {
                     setPrice(price - (price * sale.value) / 100);
