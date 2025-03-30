@@ -50,19 +50,17 @@ const Login = () => {
     const handleloginOAuth = async (type) => {
         const width = 500;
         const height = 600;
-
         const screenWidth = window.screen.width;
         const screenHeight = window.screen.height;
-
         const left = (screenWidth - width) / 2;
         const top = (screenHeight - height) / 2;
-
+        //
         window.open(
             `${BASE_API}/login/${type}`,
             '_blank',
             `width=${width},height=${height},top=${top},left=${left}`
         );
-
+        //
         window.addEventListener('message', (event) => {
             if (event.data.success) {
                 dispatch(

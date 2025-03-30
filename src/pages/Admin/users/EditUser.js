@@ -17,7 +17,7 @@ const EditUser = () => {
     const [error, setError] = useState(null);
     const [openPassword, setOpenPassword] = useState({
         password: false,
-        re_password: false
+        new_password: false
     });
     //
     const changeOpenPassword = (name) => {
@@ -35,27 +35,27 @@ const EditUser = () => {
     const handleUpdateUser = async (e) => {
         e.preventDefault();
         try {
-            if (data.password === data.re_password) {
-                if (id === login?.currentUser?._id) {
-                    dispatch(
-                        updateUserSuccess({
-                            full_name: data.full_name,
-                            email: data.email,
-                            role: data.role
-                        })
-                    );
-                }
-                const res = await updateUser(id, data);
-                if (res.status === 200) {
-                    navigate('/admin/users');
-                }
-            } else {
-                setError('Wrong password');
+            if (id === login?.currentUser?._id) {
+                dispatch(
+                    updateUserSuccess({
+                        full_name: data.full_name,
+                        email: data.email,
+                        role: data.role
+                    })
+                );
+            }
+            const res = await updateUser(id, data);
+            if (res.status === 200) {
+                navigate('/admin/users');
             }
         } catch (error) {
-            if (error.response) {
-                setError(error.response.data);
+            if (error.response.data === 'Blank password!') {
+                setError('Nhập thiếu mật khẩu');
             }
+            if (error.response.data === 'Wrong password!') {
+                setError('Sai mật khẩu');
+            }
+            return console.log(error);
         }
     };
     //
@@ -114,9 +114,7 @@ const EditUser = () => {
                                 <div className="col-md-8">
                                     {error && (
                                         <div className="alert alert-danger">
-                                            {error === 'Wrong password'
-                                                ? 'Mật khẩu không trùng khớp !'
-                                                : 'Email đã tồn tại !'}
+                                            {error}
                                         </div>
                                     )}
                                     <form
@@ -143,6 +141,7 @@ const EditUser = () => {
                                         <div className="form-group">
                                             <label>Email</label>
                                             <input
+                                                disabled
                                                 type="text"
                                                 name="email"
                                                 required
@@ -155,11 +154,11 @@ const EditUser = () => {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Mật khẩu</label>
+                                            <label>Mật khẩu cũ</label>
                                             <div className="box-password">
                                                 <input
+                                                    placeholder="Mật khẩu cũ"
                                                     name="password"
-                                                    required
                                                     type={
                                                         openPassword.password
                                                             ? 'text'
@@ -194,26 +193,26 @@ const EditUser = () => {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label>Nhập lại mật khẩu</label>
+                                            <label>Mật khẩu mới</label>
                                             <div className="box-password">
                                                 <input
-                                                    name="re_password"
-                                                    required
+                                                    placeholder="Mật khẩu mới"
+                                                    name="new_password"
                                                     type={
-                                                        openPassword.re_password
+                                                        openPassword.new_password
                                                             ? 'text'
                                                             : 'password'
                                                     }
                                                     className="form-control"
                                                     value={
-                                                        data.re_password || ''
+                                                        data.new_password || ''
                                                     }
                                                     onChange={changeData}
                                                 />
                                                 <Link
                                                     onClick={() =>
                                                         changeOpenPassword(
-                                                            're_password'
+                                                            'new_password'
                                                         )
                                                     }
                                                     className="icon-password"
@@ -223,7 +222,7 @@ const EditUser = () => {
                                                 >
                                                     <i
                                                         className={`glyphicon glyphicon-eye-${
-                                                            openPassword.re_password
+                                                            openPassword.new_password
                                                                 ? 'close'
                                                                 : 'open'
                                                         }`}

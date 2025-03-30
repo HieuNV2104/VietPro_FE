@@ -8,6 +8,10 @@ const Info = () => {
     const dispatch = useDispatch();
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState('');
+    const [openPassword, setOpenPassword] = useState({
+        password: false,
+        new_password: false
+    });
     // customer
     const customer = useSelector(
         ({ customerReducer }) => customerReducer?.login?.currentCustomer
@@ -18,6 +22,9 @@ const Info = () => {
         phone: customer?.phone || '',
         address: customer?.address || ''
     });
+    const changeOpenPassword = (name) => {
+        setOpenPassword({ ...openPassword, [name]: !openPassword[name] });
+    };
     // get data update
     const getData = (e) => {
         const { name, value } = e.target;
@@ -33,10 +40,19 @@ const Info = () => {
                     })
                 );
                 setError('');
+                setData({ ...data, password: '', new_password: '' });
                 return setIsSuccess(true);
             })
             .catch((error) => {
-                setError(error.response.data);
+                if (error.response.data === 'Phone exists!') {
+                    setError('Số điện thoại đã tồn tại');
+                }
+                if (error.response.data === 'Blank password!') {
+                    setError('Nhập thiếu mật khẩu');
+                }
+                if (error.response.data === 'Wrong password!') {
+                    setError('Sai mật khẩu');
+                }
                 setIsSuccess(false);
                 return console.log(error);
             });
@@ -57,9 +73,7 @@ const Info = () => {
     return (
         <div id="customer">
             {error && (
-                <div className="alert alert-danger text-center">
-                    Số điện thoại đã tồn tại!
-                </div>
+                <div className="alert alert-danger text-center">{error}</div>
             )}
             {isSuccess && (
                 <div className="alert alert-success text-center">
@@ -69,6 +83,20 @@ const Info = () => {
             <h3 className="text-center">Thông tin tài khoản</h3>
             <form method="post">
                 <div className="row">
+                    <div
+                        id="customer-mail"
+                        className="col-lg-6 col-md-6 col-sm-12"
+                    >
+                        <input
+                            disabled
+                            placeholder="Email (bắt buộc)"
+                            type="email"
+                            name="email"
+                            className="form-control"
+                            value={customer?.email}
+                            required
+                        />
+                    </div>
                     <div
                         id="customer-name"
                         className="col-lg-6 col-md-6 col-sm-12"
@@ -85,31 +113,51 @@ const Info = () => {
                     </div>
                     <div
                         id="customer-pass"
-                        className="col-lg-6 col-md-6 col-sm-12"
+                        className="col-lg-6 col-md-6 col-sm-12 div-pass"
                     >
                         <input
-                            disabled
-                            placeholder="Mật khẩu (bắt buộc)"
-                            type="password"
+                            onChange={getData}
+                            placeholder="Mật khẩu cũ"
+                            type={openPassword.password ? 'text' : 'password'}
                             name="password"
                             className="form-control"
-                            value={123456}
-                            required
+                            value={data.password || ''}
                         />
+                        <Link onClick={() => changeOpenPassword('password')}>
+                            <i
+                                className={`fa-solid ${
+                                    openPassword.password
+                                        ? 'fa-eye'
+                                        : ' fa-eye-slash'
+                                } icon-pass`}
+                            ></i>
+                        </Link>
                     </div>
                     <div
-                        id="customer-mail"
-                        className="col-lg-6 col-md-6 col-sm-12"
+                        id="customer-pass"
+                        className="col-lg-6 col-md-6 col-sm-12 div-pass"
                     >
                         <input
-                            disabled
-                            placeholder="Email (bắt buộc)"
-                            type="email"
-                            name="email"
+                            onChange={getData}
+                            placeholder="Mật khẩu mới"
+                            type={
+                                openPassword.new_password ? 'text' : 'password'
+                            }
+                            name="new_password"
                             className="form-control"
-                            value={customer?.email}
-                            required
+                            value={data.new_password || ''}
                         />
+                        <Link
+                            onClick={() => changeOpenPassword('new_password')}
+                        >
+                            <i
+                                className={`fa-solid ${
+                                    openPassword.new_password
+                                        ? 'fa-eye'
+                                        : ' fa-eye-slash'
+                                } icon-pass`}
+                            ></i>
+                        </Link>
                     </div>
                     <div
                         id="customer-phone"
@@ -127,9 +175,10 @@ const Info = () => {
                     </div>
                     <div
                         id="customer-add"
-                        className="col-lg-12 col-md-12 col-sm-12"
+                        className="col-lg-6 col-md-12 col-sm-12"
                     >
-                        <input
+                        <textarea
+                            rows={1}
                             placeholder="Địa chỉ nhà riêng hoặc cơ quan (bắt buộc)"
                             type="text"
                             name="address"
@@ -137,7 +186,7 @@ const Info = () => {
                             value={data.address}
                             required
                             onChange={(e) => getData(e)}
-                        />
+                        ></textarea>
                     </div>
                 </div>
             </form>
