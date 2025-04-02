@@ -61,6 +61,18 @@ export const loginCustomer = (data) => {
 export const logoutCustomer = () => {
     return Http.post('/customers/logout');
 };
+// API Get OTP
+export const getOtp = (data) => {
+    return Http.post('/customer/forgotPassword/otp', data);
+};
+// API Check OTP
+export const checkOtp = (data) => {
+    return Http.post('/customer/forgotPassword/checkOtp', data);
+};
+// API Update New Password
+export const updateNewPassword = (data) => {
+    return Http.post('/customer/forgotPassword/updateNewPassword', data);
+};
 // API Order List
 export const orderList = (id) => {
     return Http.get(`/customers/${id}/orders`);

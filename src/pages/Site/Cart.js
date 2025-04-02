@@ -12,7 +12,7 @@ import { formatPrice } from '../../shared/ultils';
 const Cart = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const code = searchParams.get('code') || null;
     // login
     const login = useSelector(({ customerReducer }) => customerReducer.login);
@@ -102,7 +102,6 @@ const Cart = () => {
                     break;
             }
         }
-        // return () => setSearchParams({ code: null });
     }, [code]);
     //
     return (

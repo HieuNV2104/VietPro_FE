@@ -9,6 +9,7 @@ import Search from '../pages/Site/Search';
 import Success from '../pages/Site/Success';
 import Register from '../pages/Site/Register';
 import Login from '../pages/Site/Login';
+import ForgotPassword from '../pages/Site/ForgotPassword';
 import NotFound from '../pages/Site/NotFound';
 import AuthRequired from '../shared/Site/AuthRequired';
 
@@ -57,6 +58,10 @@ export default [
     {
         path: '/login',
         element: AuthRequired.CheckLogged(Login)
+    },
+    {
+        path: '/forgotPassword',
+        element: AuthRequired.CheckLogged(ForgotPassword)
     },
     {
         path: '*',

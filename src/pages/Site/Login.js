@@ -144,8 +144,8 @@ const Login = () => {
                     </Link>
                 </div>
                 <div className="by-now col-lg-6 col-md-6 col-sm-12">
-                    <Link style={{ minWidth: 208 }} to={'/'}>
-                        <b>Quay về trang chủ</b>
+                    <Link style={{ minWidth: 208 }} to={'/forgotPassword'}>
+                        <b>Quên mật khẩu</b>
                     </Link>
                 </div>
             </div>
