@@ -4,14 +4,16 @@ import {
     updateCart,
     deleteItemCart
 } from '../../redux-setup/reducers/cartReducer';
-import { order } from '../../services/Api';
-import { Link, useNavigate } from 'react-router-dom';
+import { order, createPayment } from '../../services/Api';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import { formatPrice } from '../../shared/ultils';
 
 const Cart = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    //
+    const [searchParams, setSearchParams] = useSearchParams();
+    const code = searchParams.get('code') || null;
     // login
     const login = useSelector(({ customerReducer }) => customerReducer.login);
     // items cart
@@ -36,7 +38,6 @@ const Cart = () => {
             })
         );
     };
-
     // delete item
     const handleDelete = (e, _id) => {
         e.preventDefault();
@@ -53,7 +54,6 @@ const Cart = () => {
             return false;
         }
     };
-
     // order
     const handleOrder = (e) => {
         e.preventDefault();
@@ -70,7 +70,41 @@ const Cart = () => {
             .then(() => navigate('/success'))
             .catch((error) => console.log(error));
     };
-
+    // pay online
+    const handleCreatePayment = async () => {
+        const { _id, phone, address } = login.currentCustomer;
+        if (!phone || !address) {
+            alert('Hãy cập nhật đầy đủ thông tin cá nhân trước khi mua hàng!');
+            return navigate('/info');
+        }
+        try {
+            const vnpUrl = (
+                await createPayment({
+                    customer_id: _id,
+                    totalPrice,
+                    items: newItems
+                })
+            ).data;
+            window.location.href = vnpUrl;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    //
+    useEffect(() => {
+        if (code && code !== 'null') {
+            switch (code) {
+                case '00':
+                    navigate('/success');
+                    break;
+                default:
+                    alert('Thanh toán thất bại!');
+                    break;
+            }
+        }
+        // return () => setSearchParams({ code: null });
+    }, [code]);
+    //
     return (
         <>
             <div>
@@ -159,9 +193,9 @@ const Cart = () => {
                             )}
                         </div>
                         <div className="by-now col-lg-6 col-md-6 col-sm-12">
-                            <Link>
-                                <b>Trả góp Online</b>
-                                <span>Vui lòng call (+84) 0988 550 553</span>
+                            <Link onClick={handleCreatePayment}>
+                                <b>Thanh toán trực tuyến</b>
+                                <span>Sử dụng VN Pay để thanh toán ngay</span>
                             </Link>
                         </div>
                     </div>

@@ -1,6 +1,10 @@
 import Http from './Http';
 
 // API SITE
+// API Payment
+export const createPayment = (data) => {
+    return Http.post('/createPayment', data);
+};
 // API Sale
 export const getSaleDetail = (id, config) => {
     return Http.get(`/sales/${id}`, config);

@@ -50,7 +50,7 @@ Http.interceptors.response.use(
     async (error) => {
         const response = error.response;
 
-        if (response.data === 'Token expired') {
+        if (response.data && response.data === 'Token expired') {
             if (response.config.url.includes('/refreshToken')) {
                 return error;
             }
