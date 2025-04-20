@@ -31,6 +31,10 @@ const Login = () => {
             );
             navigate('/admin/dashboard');
         } catch (error) {
+            console.log('e: ', error);
+
+            console.log(error.response);
+
             if (error.response.data === 'email not valid') {
                 return setError('Email sai !');
             }
