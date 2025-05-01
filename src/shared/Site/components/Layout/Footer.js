@@ -13,19 +13,21 @@ const Footer = () => {
                             <h2>
                                 <Link href="#">
                                     <img
-                                        src="images/logo-footer.png"
+                                        className="img-fluid"
+                                        // src="images/logo-footer.png"
+                                        src="images/logo-shop.png"
                                         alt="img"
                                     />
                                 </Link>
                             </h2>
                             <p>
-                                Vietpro Academy thành lập năm 2009. Chúng tôi
-                                đào tạo chuyên sâu trong 2 lĩnh vực là Lập trình
-                                Website &amp; Mobile nhằm cung cấp cho thị
-                                trường CNTT Việt Nam những lập trình viên thực
-                                sự chất lượng, có khả năng làm việc độc lập,
-                                cũng như Team Work ở mọi môi trường đòi hỏi sự
-                                chuyên nghiệp cao.
+                                Mobile Shop được thành lập với mục tiêu cung cấp
+                                các sản phẩm điện thoại chính hãng, chất lượng
+                                cao đến tay người tiêu dùng Việt Nam. Chúng tôi
+                                cam kết mang đến trải nghiệm mua sắm trực tuyến
+                                tiện lợi, minh bạch và chuyên nghiệp, cùng dịch
+                                vụ chăm sóc khách hàng tận tâm và hậu mãi uy
+                                tín.
                             </p>
                         </div>
                         <div
@@ -33,26 +35,23 @@ const Footer = () => {
                             className="col-lg-3 col-md-6 col-sm-12"
                         >
                             <h3>Địa chỉ</h3>
-                            <p>B8A Võ Văn Dũng - Hoàng Cầu Đống Đa - Hà Nội</p>
-                            <p>Số 25 Ngõ 178/71 - Tây Sơn Đống Đa - Hà Nội</p>
+                            <p>Đại Kim - Hoàng Mai - Hà Nội</p>
                         </div>
                         <div
                             id="service"
                             className="col-lg-3 col-md-6 col-sm-12"
                         >
                             <h3>Dịch vụ</h3>
-                            <p>Bảo hành rơi vỡ, ngấm nước Care Diamond</p>
-                            <p>
-                                Bảo hành Care X60 rơi vỡ ngấm nước vẫn Đổi mới
-                            </p>
+                            <p>Điện thoại mới</p>
+                            <p>Điện thoại like new</p>
                         </div>
                         <div
                             id="hotline"
                             className="col-lg-3 col-md-6 col-sm-12"
                         >
                             <h3>Hotline</h3>
-                            <p>Phone Sale: (+84) 0988 550 553</p>
-                            <p>Email: vietpro.edu.vn@gmail.com</p>
+                            <p>Phone Sale: 0862142003</p>
+                            <p>Email: hieu0226@gmail.com</p>
                         </div>
                     </div>
                 </div>
@@ -62,8 +61,8 @@ const Footer = () => {
                     <div className="row">
                         <div className="col-lg-12 col-md-12 col-sm-12">
                             <p>
-                                2018 © Vietpro Academy. All rights reserved.
-                                Developed by Vietpro Software.
+                                2025 © Nguyen Van Hieu. All rights reserved.
+                                Developed by Nguyen Van Hieu.
                             </p>
                         </div>
                     </div>

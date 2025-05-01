@@ -37,7 +37,7 @@ const Header = () => {
                         <span className="icon-bar" />
                     </button>
                     <Link className="navbar-brand" to={'/admin/dashboard'}>
-                        <span>Vietpro</span>Shop
+                        <span>Mobile</span>Shop
                     </Link>
                     <ul className="user-menu">
                         <li className="dropdown pull-right">

@@ -45,7 +45,7 @@ const Header = () => {
                             <Link to={'/'}>
                                 <img
                                     className="img-fluid"
-                                    src="images/logo.png"
+                                    src="images/logo-shop.png"
                                     alt="logo"
                                 />
                             </Link>

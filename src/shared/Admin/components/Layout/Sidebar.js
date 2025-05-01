@@ -151,14 +151,6 @@ const Sidebar = ({ activeSidebar, activeAds }) => {
                         </ul>
                     </Link>
                 </li>
-                <li className={activeSidebar === 'setting' && 'active'}>
-                    <Link to={'/admin/setting'}>
-                        <svg className="glyph stroked gear">
-                            <use xlinkHref="#stroked-gear" />
-                        </svg>
-                        Cấu hình
-                    </Link>
-                </li>
             </ul>
         </div>
     );
