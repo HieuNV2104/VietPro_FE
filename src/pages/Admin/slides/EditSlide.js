@@ -113,10 +113,6 @@ const EditSlide = () => {
                                             {imageOrigin && (
                                                 <div>
                                                     <img
-                                                        style={{
-                                                            width: 130,
-                                                            height: 180
-                                                        }}
                                                         src={getImageSlider(
                                                             imageOrigin
                                                         )}

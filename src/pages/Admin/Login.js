@@ -61,7 +61,7 @@ const Login = () => {
                 <div className="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4">
                     <div className="login-panel panel panel-default">
                         <div className="panel-heading">
-                            Vietpro Mobile Shop - Administrator
+                            Mobile Shop - Administrator
                         </div>
                         <div className="panel-body">
                             {error && (

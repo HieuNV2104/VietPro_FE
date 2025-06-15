@@ -90,13 +90,7 @@ const AddSlide = () => {
                                             <br />
                                             {image && (
                                                 <div>
-                                                    <img
-                                                        style={{
-                                                            width: 130,
-                                                            height: 180
-                                                        }}
-                                                        src={image}
-                                                    />
+                                                    <img src={image} />
                                                 </div>
                                             )}
                                         </div>
